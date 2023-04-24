@@ -2,35 +2,94 @@ import Image from 'next/image'
 import { Inter } from 'next/font/google'
 import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import Grid from '@mui/material/Grid'; // Grid version 1
 import {
     Button
 } from "@mui/material";
 import DataTable, { ExpanderComponentProps } from 'react-data-table-component';
-import { endpoints } from '../api/loan';
-import { UserForm, Search, ExpandedSection } from '../index.styles';
+import { endpoints } from '../../api/loan';
+import { UserForm, Search, ExpandedSection } from '../../index.styles';
 
 const inter = Inter({ subsets: ['latin'] })
 
-type DataRow = {
-    username: string;
-    id: string;
+interface DataRow {
+    amount: number;
+    apr: number;
+    id: number;
+    owner_id: number;
+    status: string;
+    term: number;
+
 };
 
 const columns: TableColumn<DataRow>[] = [
     {
-        name: 'Name',
-        selector: row => row.username,
+        name: 'Amount',
+        selector: row => row.amount,
     },
     {
-        name: 'Id',
+        name: 'Apr',
+        selector: row => row.apr,
+    },
+    {
+        name: 'ID',
         selector: row => row.id,
     },
+    {
+        name: 'Owner ID',
+        selector: row => row.owner_id,
+    },
+    {
+        name: 'Status',
+        selector: row => row.status,
+    },
+    {
+        name: 'Term',
+        selector: row => row.term,
+    },
 ];
+
 
 const paginationComponentOptions = {
     rowsPerPage: 20
 }
+
+interface loanScheduleRow {
+    month: number;
+    open_balance: number;
+    total_payment: number;
+    principal_payment: number;
+    interest_payment: number;
+    close_balance: number;
+}
+
+const loanScheduleColumns: TableColumn<loanScheduleRow>[] = [
+    {
+        name: 'Month',
+        selector: row => row.month,
+    },
+    {
+        name: 'Open Balance',
+        selector: row => row.open_balance,
+    },
+    {
+        name: 'Total Payment',
+        selector: row => row.total_payment,
+    },
+    {
+        name: 'Principal Payment',
+        selector: row => row.principal_payment,
+    },
+    {
+        name: 'Interest Payment',
+        selector: row => row.interest_payment,
+    },
+    {
+        name: 'Close Balance',
+        selector: row => row.close_balance,
+    },
+];
 
 
 export default function Loans(props) {
@@ -41,6 +100,9 @@ export default function Loans(props) {
     const [error, setError] = useState<any | null>(null);
     const [loading, setLoading] = useState(false);
     const formQuery = useRef<any>(null);
+
+    const router = useRouter();
+    const { username, id } = router.query;
 
 
     const getLoans = async (id: number) => {
@@ -83,7 +145,10 @@ export default function Loans(props) {
 
 
     useEffect(() => {
-        getLoans()
+        let idToNumber = Number(id)
+        getLoans(idToNumber);
+        console.log('id', typeof id);
+        console.log('router params', router.query);
     }, [])
 
     const ExpandedComponent = ({ data }) => {
@@ -91,21 +156,19 @@ export default function Loans(props) {
         return (
             <ExpandedSection>
                 <Button variant="text">Create a new loan</Button>
-                <Button variant="text" onClick={(id) => getLoans(data.id)}>View all loans</Button>
+                <h3>Loan Schedule</h3>
                 <div>
-                    {loans && loans.map((loan, index) => {
-                        return (
-                            <div>
-                                <h1 onClick={() => getLoanSchedule(data.id, loan.id)}>Loan {index + 1}</h1>
-                                <p>{loan.amount}</p>
-                                <p>{loan.apr}</p>
-                                <p>{loan.id}</p>
-                                <p>{loan.owner_id}</p>
-                                <p>{loan.status}</p>
-                                <p>{loan.term}</p>
-                            </div>
-                        )
-                    })}
+                    {loanSchedule && (
+                        <DataTable
+                            className='data-table'
+                            columns={loanScheduleColumns}
+                            data={loanSchedule}
+                            title={`Loans for ${username}`}
+
+                        />
+                    )
+                    }
+                    
                 </div>
             </ExpandedSection>
 
@@ -116,21 +179,24 @@ export default function Loans(props) {
 
     return (
         <main className="container">
-
             <Grid container spacing={2}>
                 <Grid item sm={12} >
-                    <h2>Users</h2>
                    
-                    {users && (
+                    {loans && (
                         <DataTable
                             className='data-table'
                             columns={columns}
-                            data={users}
+                            data={loans}
+                            title={`Loans for ${username}`}
                             expandableRows
                             expandableRowsComponent={ExpandedComponent}
                             pagination
+                            onRowExpandToggled={row => {
+                                console.log('row wpanded', row);
+                                // getLoanSchedule(id, row.id)
+                            }}
                         />
-                    )
+                        )
                     }
                 </Grid>
 

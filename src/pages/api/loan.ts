@@ -16,7 +16,7 @@ type Data = {
 const URL = 'https://lending-api.azurewebsites.net/users';
 
 
-const fetchAPI = async () => {
+const fetchUsers = async () => {
   const result = await fetch(URL);
   return await result.json().catch(error => console.log('error', error))
 };
@@ -51,7 +51,7 @@ const fetchLoanSchedule = async (user_id: number, loan_id: number) => {
 
 
 export const endpoints = {
-  fetchAPI,
+  fetchUsers,
   setUser,
   fetchLoans,
   fetchLoanSchedule

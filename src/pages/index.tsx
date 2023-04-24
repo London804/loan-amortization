@@ -10,7 +10,7 @@ import DataTable, { ExpanderComponentProps } from 'react-data-table-component';
 import { endpoints } from './api/loan';
 import { useRouter } from 'next/router';
 import { UserForm, Search, ExpandedSection } from './index.styles';
-import Loans from './loans/[username][id]';
+import Loans from './loans/[username]/[id]';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -69,8 +69,7 @@ const columns: TableColumn<DataRow>[] = [
   const getUsers = async () => {
     setLoading(true);
     try {
-      const data = await endpoints.fetchAPI()
-      console.log('data', data);
+      const data = await endpoints.fetchUsers()
       if (!data) {
         setError('There was a problem loading the photos')
       } else {
@@ -206,25 +205,6 @@ const columns: TableColumn<DataRow>[] = [
           </Search>
         </Grid>
         <Grid item sm={12}>
-          {/* <table>
-            <thead>
-              <tr>
-                <td>Name</td>
-                <td>ID</td>
-              </tr>
-            </thead>
-            {users && users.map(user => {
-
-              return (
-                <tbody>
-                  <tr>
-                    <td>{user.username}</td>
-                    <td>{user.id}</td>
-                  </tr>
-                </tbody>
-              )
-            })}
-          </table> */}
           {users && (
             <DataTable
               className='data-table' 
@@ -235,7 +215,7 @@ const columns: TableColumn<DataRow>[] = [
               progressPending={loading} 
               onRowClicked={row => {
                 navigateToLoansPage(row)
-                router.push('/loans/[username][id]', `/loans/${row.username}-${row.id}`)
+                router.push('/loans/[username]/[id]', `/loans/${row.username}/${row.id}`)
               }}
 
 
