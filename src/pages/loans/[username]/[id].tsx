@@ -104,6 +104,7 @@ export default function Loans() {
     const [expandedRows, setExpandedRows] = useState([]);
     const [error, setError] = useState<any | null>(null);
     const [loading, setLoading] = useState(false);
+    const [parentID, setParentID] = useState<any | null>(null);
     const newLoanQuery = useRef<any>(null);
 
     const router = useRouter();
@@ -112,7 +113,7 @@ export default function Loans() {
         setLoading(true);
         try {
             const data = await endpoints.fetchLoans(id)
-            console.log('loans', data);
+            // console.log('loans', data);
             if (!data) {
                 setError('There was a problem loading the photos')
             } else {
@@ -130,11 +131,25 @@ export default function Loans() {
         setLoading(true);
         try {
             const data = await endpoints.fetchLoanSchedule(userId, loanId)
-            console.log('loan schedule', data);
+            // console.log('loan schedule', data);
             if (!data) {
                 setError('There was a problem loading the photos')
             } else {
                 setLoanSchedule(data);
+                // let updatedLoans = loans.map(loan => {
+                //     if (loan.id === loanId) {
+                //         console.log('loanSchedule', loanSchedule)
+                //         return {
+                //             ...loan,
+                //             loan_details: loanSchedule
+
+                //         }
+                //     } else {
+                //         return loan
+                //     }
+                // })
+
+                // setLoans(updatedLoans);
             }
 
         } catch (e) {
@@ -172,20 +187,22 @@ export default function Loans() {
     const handleRowExpandToggle = (row, parentData) => {
         console.log('parentData', parentData);
         getLoanSchedule(userID, parentData.id)
+        setParentID(parentData.id);
 
-        let updatedLoans = loans.map(loan => {
-            if (loan.id === parentData.id) {
-                return {
-                    ...loan,
-                    loan_details: [...(loanSchedule || [])]
+        // let updatedLoans = loans.map(loan => {
+        //     if (loan.id === parentData.id) {
+        //         console.log('loanSchedule', loanSchedule)
+        //         return {
+        //             ...loan,
+        //             loan_details: [...(loanSchedule || [])]
 
-                } 
-            } else {
-                return loan
-            }
-        })
+        //         } 
+        //     } else {
+        //         return loan
+        //     }
+        // })
 
-        setLoans(updatedLoans);
+        // setLoans(updatedLoans);
     }
 
     useEffect(() => {
@@ -196,23 +213,40 @@ export default function Loans() {
             let idToNumber = Number(id)
             getLoans(idToNumber);
         }
-       
-        console.log('router params', router.query);
     }, [router.isReady])
 
+    useEffect(() => {
+        console.log('data updated', loans);
+        let updatedLoans = loans?.map(loan => {
+            if (loan.id === parentID) {
+                console.log('loanSchedule', loanSchedule)
+                return {
+                    ...loan,
+                    loan_details: [...(loanSchedule || [])]
+
+                }
+            } else {
+                return loan
+            }
+        })
+
+        setLoans(updatedLoans);
+    }, [parentID, loanSchedule])
+
     const ExpandedComponent = ({ data }) => {
-        const [childData, setChildData] = useState([]);
-       
+        console.log('data loan details', data)
         return (
             <ExpandedSection>
                 <Button onClick={() => getLoanSchedule(userID, data.id)} variant="text">Loan Schedule</Button>
-                <h3>Loan Schedule</h3>
                 <div>
-                    {loanSchedule && (
+                    {data.loan_details && 
+                    (
                         <DataTable
                             className='data-table'
                             columns={loanScheduleColumns}
-                            data={loanSchedule}
+                            data={data.loan_details}
+                            title="Loan Schedule"
+                            progressPending={loading}
                         />
                        
                     )
