@@ -5,11 +5,13 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Grid from '@mui/material/Grid'; // Grid version 1
 import {
-    Button
+    Button,
+    TextField,
 } from "@mui/material";
 import DataTable, { ExpanderComponentProps } from 'react-data-table-component';
 import { endpoints } from '../../api/loan';
 import { UserForm, Search, ExpandedSection } from '../../index.styles';
+import { NewLoanForm } from './id.styles';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -92,18 +94,18 @@ const loanScheduleColumns: TableColumn<loanScheduleRow>[] = [
 ];
 
 
-export default function Loans(props) {
-    const {users} = props
+export default function Loans() {
 
     const [loans, setLoans] = useState<any | null>(null);
     const [loanSchedule, setLoanSchedule] = useState<any | null>(null);
+    const [username, setUsername] = useState<string | any>(['']);
+    const [userID, setUserID] = useState<string | any>('');
+    const [expandedRows, setExpandedRows] = useState([]);
     const [error, setError] = useState<any | null>(null);
     const [loading, setLoading] = useState(false);
     const formQuery = useRef<any>(null);
 
     const router = useRouter();
-    const { username, id } = router.query;
-
 
     const getLoans = async (id: number) => {
         setLoading(true);
@@ -143,19 +145,41 @@ export default function Loans(props) {
         }
     }
 
+   const handleRowExpandToggle = (row, parentData) => {
+    console.log('parentData', parentData);
+       const newExpandedRows = parentData
+           ? [row.id]
+           : expandedRows.filter((r) => r !== row.id);
+
+       setExpandedRows(newExpandedRows);
+       console.log('expandedRows', expandedRows)
+
+    //    if (parentData) {
+    //        getLoanSchedule(userID, newExpandedRows);
+    //    }
+   }
 
     useEffect(() => {
-        let idToNumber = Number(id)
-        getLoans(idToNumber);
-        console.log('id', typeof id);
+        if (router.isReady) {
+            const { username, id } = router.query;
+            setUsername(username);
+            setUserID(id);
+            let idToNumber = Number(id)
+            getLoans(idToNumber);
+        }
+       
         console.log('router params', router.query);
-    }, [])
+    }, [router.isReady])
+
 
     const ExpandedComponent = ({ data }) => {
         console.log('data component', data);
+        const [childData, setChildData] = useState([]);
+        // loanBuffer(userID, data.id)
+       
         return (
             <ExpandedSection>
-                <Button variant="text">Create a new loan</Button>
+                <Button onClick={() => getLoanSchedule(userID, data.id)} variant="text">Create a new loan</Button>
                 <h3>Loan Schedule</h3>
                 <div>
                     {loanSchedule && (
@@ -163,9 +187,8 @@ export default function Loans(props) {
                             className='data-table'
                             columns={loanScheduleColumns}
                             data={loanSchedule}
-                            title={`Loans for ${username}`}
-
                         />
+                       
                     )
                     }
                     
@@ -181,6 +204,40 @@ export default function Loans(props) {
         <main className="container">
             <Grid container spacing={2}>
                 <Grid item sm={12} >
+                    <section>
+                        <h2>Create a New Loan</h2>
+                        <NewLoanForm ref={formQuery} onSubmit={null}>
+                            <TextField
+                                className='text-field'
+                                variant="outlined"
+                                label="Amount"
+                                size="small"
+                                name="amount">
+                            </TextField>
+                            <TextField
+                                className='text-field'
+                                variant="outlined"
+                                label="APR"
+                                size="small"
+                                name="apr">
+                            </TextField>
+                            <TextField
+                                className='text-field'
+                                variant="outlined"
+                                label="Term"
+                                size="small"
+                                name="term">
+                            </TextField>
+                            <TextField
+                                className='text-field'
+                                variant="outlined"
+                                label="Status"
+                                size="small"
+                                name="status">
+                            </TextField>
+                            <Button variant="contained">Create a new loan</Button>
+                        </NewLoanForm>
+                    </section>
                    
                     {loans && (
                         <DataTable
@@ -191,10 +248,7 @@ export default function Loans(props) {
                             expandableRows
                             expandableRowsComponent={ExpandedComponent}
                             pagination
-                            onRowExpandToggled={row => {
-                                console.log('row wpanded', row);
-                                // getLoanSchedule(id, row.id)
-                            }}
+                            onRowExpandToggled={handleRowExpandToggle}
                         />
                         )
                     }

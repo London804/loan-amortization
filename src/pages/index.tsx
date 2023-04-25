@@ -200,7 +200,6 @@ const columns: TableColumn<DataRow>[] = [
                   <span className="ico ico-mglass"></span>
                 </button>
               </form>
-
             </div>
           </Search>
         </Grid>
