@@ -43,7 +43,6 @@ const fetchLoans = async (user_id: number) => {
 
 const fetchLoanSchedule = async (user_id: number, loan_id: number) => {
   const loanURL = `https://lending-api.azurewebsites.net/loans/${loan_id}?user_id=${user_id}`
-  console.log('fetchLoanSchedule', loanURL)
   const result = await fetch(loanURL);
   return await result.json().catch(error => console.log('error', error))
 };

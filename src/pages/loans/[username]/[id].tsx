@@ -22,6 +22,7 @@ interface DataRow {
     owner_id: number;
     status: string;
     term: number;
+    loan_details?: Array<object>;
 
 };
 
@@ -126,7 +127,6 @@ export default function Loans() {
     }
 
     const getLoanSchedule = async (userId, loanId: number) => {
-        console.log('id schedule', userId, loanId)
         setLoading(true);
         try {
             const data = await endpoints.fetchLoanSchedule(userId, loanId)
@@ -169,19 +169,24 @@ export default function Loans() {
     }
 
 
-   const handleRowExpandToggle = (row, parentData) => {
-    console.log('parentData', parentData);
-       const newExpandedRows = parentData
-           ? [row.id]
-           : expandedRows.filter((r) => r !== row.id);
+    const handleRowExpandToggle = (row, parentData) => {
+        console.log('parentData', parentData);
+        getLoanSchedule(userID, parentData.id)
 
-       setExpandedRows(newExpandedRows);
-       console.log('expandedRows', expandedRows)
+        let updatedLoans = loans.map(loan => {
+            if (loan.id === parentData.id) {
+                return {
+                    ...loan,
+                    loan_details: [...(loanSchedule || [])]
 
-    //    if (parentData) {
-    //        getLoanSchedule(userID, newExpandedRows);
-    //    }
-   }
+                } 
+            } else {
+                return loan
+            }
+        })
+
+        setLoans(updatedLoans);
+    }
 
     useEffect(() => {
         if (router.isReady) {
@@ -196,13 +201,11 @@ export default function Loans() {
     }, [router.isReady])
 
     const ExpandedComponent = ({ data }) => {
-        console.log('data component', data);
         const [childData, setChildData] = useState([]);
-        // loanBuffer(userID, data.id)
        
         return (
             <ExpandedSection>
-                <Button onClick={() => getLoanSchedule(userID, data.id)} variant="text">Create a new loan</Button>
+                <Button onClick={() => getLoanSchedule(userID, data.id)} variant="text">Loan Schedule</Button>
                 <h3>Loan Schedule</h3>
                 <div>
                     {loanSchedule && (
@@ -217,10 +220,7 @@ export default function Loans() {
                     
                 </div>
             </ExpandedSection>
-
-
         )
-
     };
 
     return (
@@ -237,7 +237,6 @@ export default function Loans() {
                                 size="small"
                                 required
                                 type="number"
-                                length="3"
                                 name="amount">
                             </TextField>
                             <TextField
