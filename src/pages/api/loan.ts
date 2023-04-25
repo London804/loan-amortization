@@ -48,11 +48,26 @@ const fetchLoanSchedule = async (user_id: number, loan_id: number) => {
   return await result.json().catch(error => console.log('error', error))
 };
 
+const createLoan = async (owner_id: number, amount: number, apr: number, term: number, active: string) => {
+  const createLoanURL = 'https://lending-api.azurewebsites.net/loans';
+  const settings = {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ owner_id, amount, apr, term, active })
+  };
+  const result = await fetch(createLoanURL, settings);
+  return await result.json().catch(error => console.log('error', error))
+};
+
 
 
 export const endpoints = {
   fetchUsers,
   setUser,
   fetchLoans,
-  fetchLoanSchedule
+  fetchLoanSchedule,
+  createLoan,
 }

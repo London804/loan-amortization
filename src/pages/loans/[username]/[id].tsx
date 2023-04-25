@@ -103,7 +103,7 @@ export default function Loans() {
     const [expandedRows, setExpandedRows] = useState([]);
     const [error, setError] = useState<any | null>(null);
     const [loading, setLoading] = useState(false);
-    const formQuery = useRef<any>(null);
+    const newLoanQuery = useRef<any>(null);
 
     const router = useRouter();
 
@@ -145,6 +145,30 @@ export default function Loans() {
         }
     }
 
+    const createNewLoan = async (query) => {
+        query.preventDefault();
+        const amount = query?.target[0].value;
+        const apr = query?.target[2].value;
+        const term = query?.target[4].value;
+        const active = query?.target[6].value;
+        setLoading(true);
+        try {
+            const data = await endpoints.createLoan(userID, amount, apr, term, active)
+            if (!data) {
+                setError('There was a problem creating this loan')
+                console.log('error')
+            } else {
+                console.log('New User', data);
+            }
+
+        } catch (e) {
+            setError(`error something went wrong, ${e}`)
+        } finally {
+            setLoading(false);
+        }
+    }
+
+
    const handleRowExpandToggle = (row, parentData) => {
     console.log('parentData', parentData);
        const newExpandedRows = parentData
@@ -170,7 +194,6 @@ export default function Loans() {
        
         console.log('router params', router.query);
     }, [router.isReady])
-
 
     const ExpandedComponent = ({ data }) => {
         console.log('data component', data);
@@ -206,12 +229,15 @@ export default function Loans() {
                 <Grid item sm={12} >
                     <section>
                         <h2>Create a New Loan</h2>
-                        <NewLoanForm ref={formQuery} onSubmit={null}>
+                        <NewLoanForm ref={newLoanQuery} onSubmit={createNewLoan}>
                             <TextField
                                 className='text-field'
                                 variant="outlined"
                                 label="Amount"
                                 size="small"
+                                required
+                                type="number"
+                                length="3"
                                 name="amount">
                             </TextField>
                             <TextField
@@ -219,6 +245,8 @@ export default function Loans() {
                                 variant="outlined"
                                 label="APR"
                                 size="small"
+                                required
+                                type="number"
                                 name="apr">
                             </TextField>
                             <TextField
@@ -226,6 +254,8 @@ export default function Loans() {
                                 variant="outlined"
                                 label="Term"
                                 size="small"
+                                required
+                                type="number"
                                 name="term">
                             </TextField>
                             <TextField
@@ -233,9 +263,10 @@ export default function Loans() {
                                 variant="outlined"
                                 label="Status"
                                 size="small"
+                                required
                                 name="status">
                             </TextField>
-                            <Button variant="contained">Create a new loan</Button>
+                            <Button type="submit" variant="contained">Create a new loan</Button>
                         </NewLoanForm>
                     </section>
                    
