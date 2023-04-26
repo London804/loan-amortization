@@ -12,6 +12,4 @@ export const NewLoanForm = styled.form`
     }
 
     
-
-
 `;

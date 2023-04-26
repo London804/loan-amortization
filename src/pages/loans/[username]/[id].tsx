@@ -1,7 +1,5 @@
 import Image from 'next/image'
-import { Inter } from 'next/font/google'
 import { useEffect, useState, useRef } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Grid from '@mui/material/Grid'; // Grid version 1
 import {
@@ -13,7 +11,6 @@ import { endpoints } from '../../api/loan';
 import { ExpandedSection } from '../../index.styles';
 import { NewLoanForm } from './id.styles';
 
-const inter = Inter({ subsets: ['latin'] })
 
 interface DataRow {
     amount: number;
@@ -101,7 +98,6 @@ export default function Loans() {
     const [loanSchedule, setLoanSchedule] = useState<any | null>(null);
     const [username, setUsername] = useState<string | any>(['']);
     const [userID, setUserID] = useState<string | any>('');
-    const [expandedRows, setExpandedRows] = useState([]);
     const [error, setError] = useState<any | null>(null);
     const [loading, setLoading] = useState(false);
     const [parentID, setParentID] = useState<any | null>(null);
@@ -132,12 +128,10 @@ export default function Loans() {
             const formattedObj = {};
             for (let key in d) {
                 if (key !== 'month') {
-                    console.log('key', key); 
                     formattedObj[key] = +(d[key]).toFixed(2);
                 } else {
                     formattedObj[key] = d[key];
                 }
-                // return Number.parseFloat(d[item]).toFixed(2);
             }
             return formattedObj
         })
@@ -150,7 +144,6 @@ export default function Loans() {
             if (!data) {
                 setError('There was a problem loading the photos')
             } else {
-                
                 setLoanSchedule(formatData(data));
             }
 
@@ -188,7 +181,7 @@ export default function Loans() {
     const shareCurrentLoan = async (query, loanData) => {
         query.preventDefault();
         const userId = query?.target[0].value;
-       
+
         setLoading(true);
         try {
             const data = await endpoints.shareLoan(loanData.owner_id, loanData.id, userId)
@@ -240,8 +233,6 @@ export default function Loans() {
     }, [parentID, loanSchedule])
 
     const ExpandedComponent = ({ data }) => {
-        console.log('data expandedComponent', data);
-        
         return (
             <ExpandedSection>
                 <div>
@@ -256,22 +247,22 @@ export default function Loans() {
                             type="number"
                             name="user_id">
                         </TextField>
-                       
+
                         <Button type="submit" variant="contained">Share Loan</Button>
                     </NewLoanForm>
-                    {data.loan_details && 
-                    (
-                        <DataTable
-                            className='data-table'
-                            columns={loanScheduleColumns}
-                            data={data.loan_details}
-                            title="Loan Schedule"
-                            progressPending={loading}
-                        />
-                       
-                    )
+                    {data.loan_details &&
+                        (
+                            <DataTable
+                                className='data-table'
+                                columns={loanScheduleColumns}
+                                data={data.loan_details}
+                                title="Loan Schedule"
+                                progressPending={loading}
+                            />
+
+                        )
                     }
-                    
+
                 </div>
             </ExpandedSection>
         )
@@ -321,7 +312,7 @@ export default function Loans() {
                             <Button type="submit" variant="contained">Create a new loan</Button>
                         </NewLoanForm>
                     </section>
-                   
+
                     {loans && (
                         <DataTable
                             className='data-table'
@@ -333,7 +324,7 @@ export default function Loans() {
                             pagination
                             onRowExpandToggled={handleRowExpandToggle}
                         />
-                        )
+                    )
                     }
                 </Grid>
 
