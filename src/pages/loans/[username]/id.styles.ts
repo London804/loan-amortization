@@ -10,4 +10,12 @@ export const NewLoanForm = styled.form`
         margin-bottom: 1rem;
         border-radius: 0.5rem;
     }  
+
+    .button {
+        right: 0.5rem;
+    }
+
+    .MuiInputAdornment-root {
+        width: 1.25rem;
+    }
 `;

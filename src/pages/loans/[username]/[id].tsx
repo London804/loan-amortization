@@ -4,7 +4,11 @@ import Grid from '@mui/material/Grid'; // Grid version 1
 import {
     Button,
     TextField,
+    Icon, 
+    IconButton
 } from "@mui/material";
+import Add from '@mui/icons-material/Add';
+import InputAdornment from '@mui/material/InputAdornment';
 import DataTable, { ExpanderComponentProps } from 'react-data-table-component';
 import { endpoints } from '../../api/loan';
 import { ExpandedSection } from '../../index.styles';
@@ -230,9 +234,17 @@ export default function Loans() {
                             size="small"
                             required
                             type="number"
-                            name="user_id">
+                            name="user_id"
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position='end'>
+                                        <IconButton type='submit' className='button'>
+                                            <Add />
+                                        </IconButton>
+                                    </InputAdornment>
+                                )
+                            }}>
                         </TextField>
-                        <Button type="submit" variant="contained">Share Loan</Button>
                     </NewLoanForm>
                     {status && (
                         <Status>{status}</Status>
@@ -254,6 +266,7 @@ export default function Loans() {
             </ExpandedSection>
         )
     };
+    
 
     return (
         <main className="container">
