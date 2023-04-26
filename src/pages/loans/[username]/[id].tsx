@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/router';
 import Grid from '@mui/material/Grid'; // Grid version 1
@@ -10,6 +9,8 @@ import DataTable, { ExpanderComponentProps } from 'react-data-table-component';
 import { endpoints } from '../../api/loan';
 import { ExpandedSection } from '../../index.styles';
 import { NewLoanForm } from './id.styles';
+import { Status } from '../../../styles/statusHandling.styles'
+import { formatData } from '../../../helpers/formatter';
 
 
 interface DataRow {
@@ -50,10 +51,6 @@ const columns: TableColumn<DataRow>[] = [
     },
 ];
 
-
-const paginationComponentOptions = {
-    rowsPerPage: 20
-}
 
 interface loanScheduleRow {
     month: number;
@@ -98,7 +95,9 @@ export default function Loans() {
     const [loanSchedule, setLoanSchedule] = useState<any | null>(null);
     const [username, setUsername] = useState<string | any>(['']);
     const [userID, setUserID] = useState<string | any>('');
+    const [status, setStatus] = useState<any | null>(null);
     const [error, setError] = useState<any | null>(null);
+    const [newLoanStatus, setNewLoanStatus] = useState<any | null>(null);
     const [loading, setLoading] = useState(false);
     const [parentID, setParentID] = useState<any | null>(null);
     const newLoanQuery = useRef<any>(null);
@@ -111,30 +110,16 @@ export default function Loans() {
         try {
             const data = await endpoints.fetchLoans(id)
             if (!data) {
-                setError('There was a problem loading the photos')
+                setStatus('There was a problem loading loans')
             } else {
                 setLoans(data);
             }
 
         } catch (e) {
-            setError(`error something went wrong, ${e}`)
+            setStatus(`error something went wrong, ${e}`)
         } finally {
             setLoading(false);
         }
-    }
-
-    const formatData = (data) => {
-        return data.map(d => {
-            const formattedObj = {};
-            for (let key in d) {
-                if (key !== 'month') {
-                    formattedObj[key] = +(d[key]).toFixed(2);
-                } else {
-                    formattedObj[key] = d[key];
-                }
-            }
-            return formattedObj
-        })
     }
 
     const getLoanSchedule = async (userId, loanId: number) => {
@@ -142,7 +127,7 @@ export default function Loans() {
         try {
             const data = await endpoints.fetchLoanSchedule(userId, loanId)
             if (!data) {
-                setError('There was a problem loading the photos')
+                setError('There was a problem loading the loan schedule')
             } else {
                 setLoanSchedule(formatData(data));
             }
@@ -165,14 +150,15 @@ export default function Loans() {
         try {
             const data = await endpoints.createLoan(userID, amount, apr, term, active)
             if (!data) {
-                setError('There was a problem creating this loan')
+                setNewLoanStatus('There was a problem creating this loan')
                 console.log('error')
             } else {
-                console.log('New User', data);
+                console.log('create new loan', data);
+                setNewLoanStatus('This loan was created successfully! Please refresh your browser to see it below.')
             }
 
         } catch (e) {
-            setError(`error something went wrong, ${e}`)
+            setNewLoanStatus(`error something went wrong, ${e}`)
         } finally {
             setLoading(false);
         }
@@ -186,14 +172,15 @@ export default function Loans() {
         try {
             const data = await endpoints.shareLoan(loanData.owner_id, loanData.id, userId)
             if (!data) {
-                setError('There was a problem creating this loan')
+                setStatus('There was a problem creating this loan')
                 console.log('error')
             } else {
                 console.log('New User', data);
+                setStatus('This loan was shared successfully!')
             }
 
         } catch (e) {
-            setError(`error something went wrong, ${e}`)
+            setStatus(`Error something went wrong, ${e}`)
         } finally {
             setLoading(false);
         }
@@ -201,7 +188,6 @@ export default function Loans() {
 
 
     const handleRowExpandToggle = (row, parentData) => {
-        console.log('parentData', parentData);
         getLoanSchedule(userID, parentData.id)
         setParentID(parentData.id);
     }
@@ -229,7 +215,6 @@ export default function Loans() {
             }
         })
         setLoans(updatedLoans);
-        console.log('loanSchedule', loanSchedule)
     }, [parentID, loanSchedule])
 
     const ExpandedComponent = ({ data }) => {
@@ -247,9 +232,12 @@ export default function Loans() {
                             type="number"
                             name="user_id">
                         </TextField>
-
                         <Button type="submit" variant="contained">Share Loan</Button>
                     </NewLoanForm>
+                    {status && (
+                        <Status>{status}</Status>
+                    )}
+
                     {data.loan_details &&
                         (
                             <DataTable
@@ -259,7 +247,6 @@ export default function Loans() {
                                 title="Loan Schedule"
                                 progressPending={loading}
                             />
-
                         )
                     }
 
@@ -311,6 +298,9 @@ export default function Loans() {
                             </TextField>
                             <Button type="submit" variant="contained">Create a new loan</Button>
                         </NewLoanForm>
+                        {newLoanStatus && (
+                            <Status>{newLoanStatus}</Status>
+                        )}
                     </section>
 
                     {loans && (
@@ -327,10 +317,7 @@ export default function Loans() {
                     )
                     }
                 </Grid>
-
-
             </Grid>
-
         </main>
     )
 }

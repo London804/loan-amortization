@@ -81,7 +81,6 @@ const columns: TableColumn<DataRow>[] = [
       setError(`error something went wrong, ${e}`)
     } finally {
       setLoading(false);
-      router.reload()
     }
   }
 
