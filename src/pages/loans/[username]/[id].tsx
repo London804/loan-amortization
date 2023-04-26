@@ -11,8 +11,7 @@ import Add from '@mui/icons-material/Add';
 import InputAdornment from '@mui/material/InputAdornment';
 import DataTable, { ExpanderComponentProps } from 'react-data-table-component';
 import { endpoints } from '../../api/loan';
-import { ExpandedSection } from '../../index.styles';
-import { NewLoanForm } from './id.styles';
+import { NewLoanForm, ExpandedSection } from './id.styles';
 import { Status } from '../../../styles/statusHandling.styles'
 import { formatData } from '../../../helpers/formatter';
 
@@ -126,7 +125,7 @@ export default function Loans() {
         }
     }
 
-    const getLoanSchedule = async (userId, loanId: number) => {
+    const getLoanSchedule = async (userId: number, loanId: number) => {
         setLoading(true);
         try {
             const data = await endpoints.fetchLoanSchedule(userId, loanId)

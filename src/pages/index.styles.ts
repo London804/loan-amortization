@@ -4,16 +4,7 @@ import { colors } from '../styles/colors.styles';
 export const UserForm = styled.form`
   display: flex;
   margin-bottom: 2.5rem; 
-  .userForm-name{
-      display: flex;
-      flex-direction: column;
-  } 
-
-  .userForm-submit {
-    margin-left: 2rem;
-  }
 `
-
 
 export const SubmitUserForm = styled.form`
   display: flex;
@@ -33,9 +24,3 @@ export const SubmitUserForm = styled.form`
     width: 1.25rem;
   }
 `;
-
-export const ExpandedSection = styled.section`
-  min-height: 12.5rem;
-  padding: 1rem;
-
-`

@@ -132,6 +132,7 @@ const columns: TableColumn<DataRow>[] = [
         <Grid item xs={12}>
           {users && (
             <DataTable
+              data-testid='table' 
               className='data-table' 
               columns={columns} 
               data={users}

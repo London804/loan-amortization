@@ -19,3 +19,9 @@ export const NewLoanForm = styled.form`
         width: 1.25rem;
     }
 `;
+
+export const ExpandedSection = styled.section`
+  min-height: 12.5rem;
+  padding: 1rem;
+
+`
