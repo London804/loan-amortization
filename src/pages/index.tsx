@@ -73,6 +73,7 @@ const columns: TableColumn<DataRow>[] = [
       if (!data) {
         setError('There was a problem loading the photos')
       } else {
+        console.log('users', data);
         setUsers(data);
       }
 
@@ -154,7 +155,6 @@ const columns: TableColumn<DataRow>[] = [
   }, [])
 
   useEffect(() => {
-    console.log(redirState)
   }, [redirState])
   // const ExpandedComponent = ({ data }) => {
   //   console.log('data component', data);

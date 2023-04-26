@@ -106,6 +106,7 @@ export default function Loans() {
     const [loading, setLoading] = useState(false);
     const [parentID, setParentID] = useState<any | null>(null);
     const newLoanQuery = useRef<any>(null);
+    const shareLoanQuery = useRef<any>(null);
 
     const router = useRouter();
 
@@ -131,25 +132,10 @@ export default function Loans() {
         setLoading(true);
         try {
             const data = await endpoints.fetchLoanSchedule(userId, loanId)
-            // console.log('loan schedule', data);
             if (!data) {
                 setError('There was a problem loading the photos')
             } else {
                 setLoanSchedule(data);
-                // let updatedLoans = loans.map(loan => {
-                //     if (loan.id === loanId) {
-                //         console.log('loanSchedule', loanSchedule)
-                //         return {
-                //             ...loan,
-                //             loan_details: loanSchedule
-
-                //         }
-                //     } else {
-                //         return loan
-                //     }
-                // })
-
-                // setLoans(updatedLoans);
             }
 
         } catch (e) {
@@ -183,26 +169,32 @@ export default function Loans() {
         }
     }
 
+    const shareCurrentLoan = async (query, loanData) => {
+        query.preventDefault();
+        const userId = query?.target[0].value;
+       
+        setLoading(true);
+        try {
+            const data = await endpoints.shareLoan(loanData.owner_id, loanData.id, userId)
+            if (!data) {
+                setError('There was a problem creating this loan')
+                console.log('error')
+            } else {
+                console.log('New User', data);
+            }
+
+        } catch (e) {
+            setError(`error something went wrong, ${e}`)
+        } finally {
+            setLoading(false);
+        }
+    }
+
 
     const handleRowExpandToggle = (row, parentData) => {
         console.log('parentData', parentData);
         getLoanSchedule(userID, parentData.id)
         setParentID(parentData.id);
-
-        // let updatedLoans = loans.map(loan => {
-        //     if (loan.id === parentData.id) {
-        //         console.log('loanSchedule', loanSchedule)
-        //         return {
-        //             ...loan,
-        //             loan_details: [...(loanSchedule || [])]
-
-        //         } 
-        //     } else {
-        //         return loan
-        //     }
-        // })
-
-        // setLoans(updatedLoans);
     }
 
     useEffect(() => {
@@ -216,10 +208,8 @@ export default function Loans() {
     }, [router.isReady])
 
     useEffect(() => {
-        console.log('data updated', loans);
         let updatedLoans = loans?.map(loan => {
             if (loan.id === parentID) {
-                console.log('loanSchedule', loanSchedule)
                 return {
                     ...loan,
                     loan_details: [...(loanSchedule || [])]
@@ -229,16 +219,29 @@ export default function Loans() {
                 return loan
             }
         })
-
         setLoans(updatedLoans);
     }, [parentID, loanSchedule])
 
     const ExpandedComponent = ({ data }) => {
-        console.log('data loan details', data)
+        console.log('data expandedComponent', data);
+        
         return (
             <ExpandedSection>
-                <Button onClick={() => getLoanSchedule(userID, data.id)} variant="text">Loan Schedule</Button>
                 <div>
+                    <h3>Share loan with another user</h3>
+                    <NewLoanForm ref={shareLoanQuery} onSubmit={(query) => shareCurrentLoan(query, data)}>
+                        <TextField
+                            className='text-field'
+                            variant="outlined"
+                            label="User ID"
+                            size="small"
+                            required
+                            type="number"
+                            name="user_id">
+                        </TextField>
+                       
+                        <Button type="submit" variant="contained">Share Loan</Button>
+                    </NewLoanForm>
                     {data.loan_details && 
                     (
                         <DataTable
