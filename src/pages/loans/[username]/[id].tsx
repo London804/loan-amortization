@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import DataTable, { ExpanderComponentProps } from 'react-data-table-component';
 import { endpoints } from '../../api/loan';
-import { UserForm, Search, ExpandedSection } from '../../index.styles';
+import { ExpandedSection } from '../../index.styles';
 import { NewLoanForm } from './id.styles';
 
 const inter = Inter({ subsets: ['latin'] })
@@ -114,7 +114,6 @@ export default function Loans() {
         setLoading(true);
         try {
             const data = await endpoints.fetchLoans(id)
-            // console.log('loans', data);
             if (!data) {
                 setError('There was a problem loading the photos')
             } else {
@@ -128,6 +127,22 @@ export default function Loans() {
         }
     }
 
+    const formatData = (data) => {
+        return data.map(d => {
+            const formattedObj = {};
+            for (let key in d) {
+                if (key !== 'month') {
+                    console.log('key', key); 
+                    formattedObj[key] = +(d[key]).toFixed(2);
+                } else {
+                    formattedObj[key] = d[key];
+                }
+                // return Number.parseFloat(d[item]).toFixed(2);
+            }
+            return formattedObj
+        })
+    }
+
     const getLoanSchedule = async (userId, loanId: number) => {
         setLoading(true);
         try {
@@ -135,7 +150,8 @@ export default function Loans() {
             if (!data) {
                 setError('There was a problem loading the photos')
             } else {
-                setLoanSchedule(data);
+                
+                setLoanSchedule(formatData(data));
             }
 
         } catch (e) {
@@ -205,7 +221,7 @@ export default function Loans() {
             let idToNumber = Number(id)
             getLoans(idToNumber);
         }
-    }, [router.isReady])
+    }, [router.isReady, router.query])
 
     useEffect(() => {
         let updatedLoans = loans?.map(loan => {
@@ -220,6 +236,7 @@ export default function Loans() {
             }
         })
         setLoans(updatedLoans);
+        console.log('loanSchedule', loanSchedule)
     }, [parentID, loanSchedule])
 
     const ExpandedComponent = ({ data }) => {
@@ -263,7 +280,7 @@ export default function Loans() {
     return (
         <main className="container">
             <Grid container spacing={2}>
-                <Grid item sm={12} >
+                <Grid item xs={12} >
                     <section>
                         <h2>Create a New Loan</h2>
                         <NewLoanForm ref={newLoanQuery} onSubmit={createNewLoan}>
@@ -282,7 +299,6 @@ export default function Loans() {
                                 label="APR"
                                 size="small"
                                 required
-                                type="number"
                                 name="apr">
                             </TextField>
                             <TextField

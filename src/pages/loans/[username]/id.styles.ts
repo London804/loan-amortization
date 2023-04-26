@@ -9,7 +9,6 @@ export const NewLoanForm = styled.form`
         margin-right: 1rem;
         margin-bottom: 1rem;
         border-radius: 0.5rem;
-
     }
 
     
