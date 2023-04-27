@@ -115,13 +115,13 @@ export default function Loans() {
         try {
             const data = await endpoints.fetchLoans(id)
             if (!data) {
-                setStatus({type: 'error', message: 'There was a problem loading loans'})
+                setError({type: 'error', message: 'There was a problem loading loans'})
             } else {
                 setLoans(data);
             }
 
         } catch (e) {
-            setStatus({type: 'error', message: `error something went wrong, ${e}`})
+            setError({type: 'error', message: `error something went wrong, ${e}`})
         } finally {
             setLoading(false);
         }
@@ -132,13 +132,13 @@ export default function Loans() {
         try {
             const data = await endpoints.fetchLoanSchedule(userId, loanId)
             if (!data) {
-                setError('There was a problem loading the loan schedule')
+                setError({ type: 'error', message: 'There was a problem loading loans' })
             } else {
                 setLoanSchedule(formatData(data));
             }
 
         } catch (e) {
-            setError(`error something went wrong, ${e}`)
+            setError({ type: 'error', message: `error something went wrong, ${e}`})
             console.log('error', e)
         } finally {
             setLoading(false);
@@ -163,7 +163,7 @@ export default function Loans() {
             }
 
         } catch (e) {
-            setNewLoanStatus({type: 'error', message:`error something went wrong, ${e}`})
+            setNewLoanStatus({type: 'error', message:`Error something went wrong, ${e}`})
         } finally {
             setLoading(false);
         }
@@ -320,6 +320,12 @@ export default function Loans() {
                             <Notification
                                 type={newLoanStatus.type}
                                 message={newLoanStatus.message}
+                            />
+                        )}
+                        {error && (
+                            <Notification
+                                type={error.type}
+                                message={error.message}
                             />
                         )}
                     </section>
