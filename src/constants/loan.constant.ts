@@ -10,6 +10,7 @@ export interface Loan {
     status: string;
     owner_id: number;
     id: number;
+    loan_details?: Array<object>;
 }
 
 export interface Attention {

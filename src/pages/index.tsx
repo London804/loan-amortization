@@ -1,19 +1,16 @@
 import Image from 'next/image'
 import { useEffect, useState, useRef } from 'react';
-import Link from 'next/link';
 import Grid from '@mui/material/Grid'; // Grid version 1
 import { 
   TextField,
-  Icon,
   IconButton,
 } from "@mui/material";
 import Add from '@mui/icons-material/Add';
 import InputAdornment from '@mui/material/InputAdornment';
-import DataTable, { ExpanderComponentProps } from 'react-data-table-component';
+import DataTable from 'react-data-table-component';
 import { endpoints } from './api/loan';
 import { useRouter } from 'next/router';
 import { SubmitUserForm } from './index.styles';
-import { Status } from '../styles/statusHandling.styles'
 import Notification from "../components/notification";
 import {Attention} from '../constants/loan.constant';
 
@@ -60,7 +57,6 @@ const columns: TableColumn<DataRow>[] = [
       if (!data) {
         setStatus({type: 'error', message: 'There was a problem loading the photos'})
       } else {
-        console.log('users', data);
         setUsers(data);
       }
 
@@ -74,7 +70,6 @@ const columns: TableColumn<DataRow>[] = [
   const createUser = async (query) => {
     query.preventDefault();
     const searchText = query?.target[0].value
-    console.log('searchText', searchText)
     setLoading(true);
     try {
       const data = await endpoints.setUser(searchText)
@@ -90,10 +85,6 @@ const columns: TableColumn<DataRow>[] = [
     } finally {
       setLoading(false);
     }
-  }
-
-  const navigateToLoansPage = (row) => {
-    console.log('row', row);
   }
 
   useEffect(() => {
@@ -148,15 +139,13 @@ const columns: TableColumn<DataRow>[] = [
               title="Users"
               progressPending={loading} 
               onRowClicked={row => {
-                navigateToLoansPage(row)
                 router.push('/loans/[username]/[id]', `/loans/${row.username}/${row.id}`)
               }}
             />
             )
           }
         </Grid>
-
-              
+  
       </Grid>
 
     </main>

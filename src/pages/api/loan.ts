@@ -1,18 +1,3 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import type { NextApiRequest, NextApiResponse } from 'next'
-
-type Data = {
-  name: string
-}
-
-// export default function handler(
-//   req: NextApiRequest,
-//   res: NextApiResponse<Data>
-// ) {
-//   res.status(200).json({ name: 'John Doe' })
-// }
-
-
 const URL = 'https://lending-api.azurewebsites.net/users';
 
 
@@ -73,8 +58,6 @@ const shareLoan = async (owner_id: number, loan_id: number, user_id: number) => 
   const result = await fetch(createLoanURL, settings);
   return await result.json().catch(error => console.log('error', error))
 };
-
-
 
 export const endpoints = {
   fetchUsers,

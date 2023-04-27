@@ -4,32 +4,19 @@ import Grid from '@mui/material/Grid'; // Grid version 1
 import {
     Button,
     TextField,
-    Icon, 
     IconButton,
 } from "@mui/material";
 import Add from '@mui/icons-material/Add';
 import InputAdornment from '@mui/material/InputAdornment';
-import DataTable, { ExpanderComponentProps } from 'react-data-table-component';
+import DataTable from 'react-data-table-component';
 import { endpoints } from '../../api/loan';
 import { NewLoanForm, ExpandedSection } from './id.styles';
-import { Status } from '../../../styles/statusHandling.styles'
 import { formatData } from '../../../helpers/formatter';
 import  Notification from "../../../components/notification";
+import { Loan } from '../../../constants/loan.constant';
 
 
-
-interface DataRow {
-    amount: number;
-    apr: number;
-    id: number;
-    owner_id: number;
-    status: string;
-    term: number;
-    loan_details?: Array<object>;
-
-};
-
-const columns: TableColumn<DataRow>[] = [
+const columns: TableColumn<Loan>[] = [
     {
         name: 'Amount',
         selector: row => row.amount,
@@ -139,7 +126,6 @@ export default function Loans() {
 
         } catch (e) {
             setError({ type: 'error', message: `error something went wrong, ${e}`})
-            console.log('error', e)
         } finally {
             setLoading(false);
         }
@@ -170,6 +156,7 @@ export default function Loans() {
     }
 
     const shareCurrentLoan = async (query, loanData) => {
+        console.log('loanData', loanData);
         query.preventDefault();
         const userId = query?.target[0].value;
 
@@ -178,9 +165,7 @@ export default function Loans() {
             const data = await endpoints.shareLoan(loanData.owner_id, loanData.id, userId)
             if (!data) {
                 setStatus({type: 'error', message: 'There was a problem creating this loan'})
-                console.log('error')
             } else {
-                console.log('New User', data);
                 setStatus({type: 'success', message: 'This loan was shared successfully!'})
             }
 
@@ -192,7 +177,7 @@ export default function Loans() {
     }
 
 
-    const handleRowExpandToggle = (row, parentData) => {
+    const handleRowExpandToggle = (row: boolean, parentData: Loan) => {
         getLoanSchedule(userID, parentData.id)
         setParentID(parentData.id);
     }
@@ -208,7 +193,7 @@ export default function Loans() {
     }, [router.isReady, router.query])
 
     useEffect(() => {
-        let updatedLoans = loans?.map(loan => {
+        let updatedLoans = loans?.map((loan: Loan) => {
             if (loan.id === parentID) {
                 return {
                     ...loan,
@@ -222,7 +207,7 @@ export default function Loans() {
         setLoans(updatedLoans);
     }, [parentID, loanSchedule])
 
-    const ExpandedComponent = ({ data }) => {
+    const ExpandedComponent = ({data}) => {
         return (
             <ExpandedSection>
                 <div>
