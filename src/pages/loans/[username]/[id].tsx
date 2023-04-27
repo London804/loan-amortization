@@ -33,7 +33,7 @@ const columns: TableColumn<DataRow>[] = [
         selector: row => row.amount,
     },
     {
-        name: 'Apr',
+        name: 'APR',
         selector: row => row.apr,
     },
     {
@@ -317,6 +317,7 @@ export default function Loans() {
 
                     {loans && (
                         <DataTable
+                            data-testid='table' 
                             className='data-table'
                             columns={columns}
                             data={loans}

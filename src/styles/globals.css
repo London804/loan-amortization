@@ -103,7 +103,7 @@ a {
 }
 
 .container {
-  max-width: --max-width;
+  max-width: var(--max-width);
   padding: 1rem;
   margin: 0 auto;
 }
