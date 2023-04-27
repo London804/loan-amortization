@@ -7,8 +7,6 @@ import {
 
 export default function Notification(props: Attention) {
     const {type, message} = props
-    console.log('props', props);
-
 
     switch (type) {
         case 'success':

@@ -271,6 +271,9 @@ export default function Loans() {
                                 label="Amount"
                                 size="small"
                                 required
+                                inputProps={{
+                                    max: '1000000000'
+                                }}
                                 type="number"
                                 name="amount">
                             </TextField>
@@ -278,6 +281,10 @@ export default function Loans() {
                                 className='text-field'
                                 variant="outlined"
                                 label="APR"
+                                type='number'
+                                inputProps={{
+                                    step: "0.01",
+                                }}
                                 size="small"
                                 required
                                 name="apr">
@@ -286,6 +293,9 @@ export default function Loans() {
                                 className='text-field'
                                 variant="outlined"
                                 label="Term"
+                                inputProps={{
+                                    max: '360'
+                                }}
                                 size="small"
                                 required
                                 type="number"

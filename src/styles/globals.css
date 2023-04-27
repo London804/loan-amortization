@@ -114,7 +114,7 @@ a {
   }
 }
 
-.data-table {
+.data-table, .users-table {
   color: rgb(var(--foreground-rgb));
   background-color: grey;
 }
@@ -122,6 +122,9 @@ a {
 .rdt_TableRow:hover {
   transition: '0.25s';
   background-color: rgba(0, 0, 0, .1);
+}
+
+.users-table .rdt_TableRow:hover {
   cursor: pointer;
 }
 
