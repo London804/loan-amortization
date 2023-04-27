@@ -142,9 +142,7 @@ export default function Loans() {
             const data = await endpoints.createLoan(userID, amount, apr, term, active)
             if (!data) {
                 setNewLoanStatus({type: 'error', message: 'There was a problem creating this loan'})
-                console.log('error')
             } else {
-                console.log('create new loan', data);
                 setNewLoanStatus({type: 'success', message: 'This loan was created successfully! Please refresh your browser to see it below.'})
             }
 
@@ -156,7 +154,6 @@ export default function Loans() {
     }
 
     const shareCurrentLoan = async (query, loanData) => {
-        console.log('loanData', loanData);
         query.preventDefault();
         const userId = query?.target[0].value;
 
