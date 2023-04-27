@@ -14,11 +14,13 @@ import { endpoints } from './api/loan';
 import { useRouter } from 'next/router';
 import { SubmitUserForm } from './index.styles';
 import { Status } from '../styles/statusHandling.styles'
+import Notification from "../components/notification";
+import {Attention} from '../constants/loan.constant';
 
 
 export default function Home() {
   const [users, setUsers] = useState<any | null>(null);
-  const [status, setStatus] = useState<any | null>(null);
+  const [status, setStatus] = useState<Attention | null>(null);
   const [loading, setLoading] = useState(false);
   const formQuery = useRef<any>(null);
   const router = useRouter();
@@ -56,14 +58,14 @@ const columns: TableColumn<DataRow>[] = [
     try {
       const data = await endpoints.fetchUsers()
       if (!data) {
-        setStatus('There was a problem loading the photos')
+        setStatus({type: 'error', message: 'There was a problem loading the photos'})
       } else {
         console.log('users', data);
         setUsers(data);
       }
 
     } catch (e) {
-      setStatus(`error something went wrong, ${e}`)
+      setStatus({type: 'error', message: `Error something went wrong, ${e}`})
     } finally {
       setLoading(false);
     }
@@ -77,14 +79,14 @@ const columns: TableColumn<DataRow>[] = [
     try {
       const data = await endpoints.setUser(searchText)
       if (!data) {
-        setStatus('No Users Found')
+        setStatus({type: 'info', message: 'No Users Found'})
       } else {
         console.log('New User', data);
-        setStatus('User added! Please refresh the browser')
+        setStatus({type: 'success', message: 'User added! Please refresh the browser'})
       }
 
     } catch (e) {
-      setStatus(`error something went wrong, ${e}`)
+      setStatus({type: 'error', message: `error something went wrong, ${e}`})
     } finally {
       setLoading(false);
     }
@@ -127,8 +129,14 @@ const columns: TableColumn<DataRow>[] = [
               </TextField>
           </SubmitUserForm>
          
-          {status && <Status>{status}</Status>}
+          { status && (
+            <Notification
+              type={status.type}
+              message={status.message}
+            />
+          )}
         </Grid>
+
         <Grid item xs={12}>
           {users && (
             <DataTable

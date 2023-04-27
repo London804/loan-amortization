@@ -10,7 +10,11 @@ export interface Loan {
     status: string;
     owner_id: number;
     id: number;
+}
 
+export interface Attention {
+    type: 'success' | 'error' | 'info';
+    message: string;
 }
 
 export const users: Array<User> = [

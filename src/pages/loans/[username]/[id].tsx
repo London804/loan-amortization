@@ -5,7 +5,7 @@ import {
     Button,
     TextField,
     Icon, 
-    IconButton
+    IconButton,
 } from "@mui/material";
 import Add from '@mui/icons-material/Add';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -14,6 +14,8 @@ import { endpoints } from '../../api/loan';
 import { NewLoanForm, ExpandedSection } from './id.styles';
 import { Status } from '../../../styles/statusHandling.styles'
 import { formatData } from '../../../helpers/formatter';
+import  Notification from "../../../components/notification";
+
 
 
 interface DataRow {
@@ -113,13 +115,13 @@ export default function Loans() {
         try {
             const data = await endpoints.fetchLoans(id)
             if (!data) {
-                setStatus('There was a problem loading loans')
+                setStatus({type: 'error', message: 'There was a problem loading loans'})
             } else {
                 setLoans(data);
             }
 
         } catch (e) {
-            setStatus(`error something went wrong, ${e}`)
+            setStatus({type: 'error', message: `error something went wrong, ${e}`})
         } finally {
             setLoading(false);
         }
@@ -153,15 +155,15 @@ export default function Loans() {
         try {
             const data = await endpoints.createLoan(userID, amount, apr, term, active)
             if (!data) {
-                setNewLoanStatus('There was a problem creating this loan')
+                setNewLoanStatus({type: 'error', message: 'There was a problem creating this loan'})
                 console.log('error')
             } else {
                 console.log('create new loan', data);
-                setNewLoanStatus('This loan was created successfully! Please refresh your browser to see it below.')
+                setNewLoanStatus({type: 'success', message: 'This loan was created successfully! Please refresh your browser to see it below.'})
             }
 
         } catch (e) {
-            setNewLoanStatus(`error something went wrong, ${e}`)
+            setNewLoanStatus({type: 'error', message:`error something went wrong, ${e}`})
         } finally {
             setLoading(false);
         }
@@ -175,15 +177,15 @@ export default function Loans() {
         try {
             const data = await endpoints.shareLoan(loanData.owner_id, loanData.id, userId)
             if (!data) {
-                setStatus('There was a problem creating this loan')
+                setStatus({type: 'error', message: 'There was a problem creating this loan'})
                 console.log('error')
             } else {
                 console.log('New User', data);
-                setStatus('This loan was shared successfully!')
+                setStatus({type: 'success', message: 'This loan was shared successfully!'})
             }
 
         } catch (e) {
-            setStatus(`Error something went wrong, ${e}`)
+            setStatus({type: 'error', message:`Error something went wrong, ${e}`})
         } finally {
             setLoading(false);
         }
@@ -246,8 +248,12 @@ export default function Loans() {
                         </TextField>
                     </NewLoanForm>
                     {status && (
-                        <Status>{status}</Status>
+                        <Notification
+                            type={status.type}
+                            message={status.message}
+                        />
                     )}
+
 
                     {data.loan_details &&
                         (
@@ -311,7 +317,10 @@ export default function Loans() {
                             <Button type="submit" variant="contained">Create a new loan</Button>
                         </NewLoanForm>
                         {newLoanStatus && (
-                            <Status>{newLoanStatus}</Status>
+                            <Notification
+                                type={newLoanStatus.type}
+                                message={newLoanStatus.message}
+                            />
                         )}
                     </section>
 

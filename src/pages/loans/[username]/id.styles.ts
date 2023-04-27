@@ -3,7 +3,7 @@ import { colors } from '../../../styles/colors.styles';
 
 
 export const NewLoanForm = styled.form`
-    margin: 1rem 0 2rem;
+    margin: 1rem 0 1.5rem;
     .text-field {
         background: ${colors.white};
         margin-right: 1rem;
