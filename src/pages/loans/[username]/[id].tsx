@@ -95,6 +95,9 @@ export default function Loans() {
     const newLoanQuery = useRef<any>(null);
     const shareLoanQuery = useRef<any>(null);
 
+    const [APR, setAPR] = useState<string | any>('.');
+    const [active, setActive] = useState<string>('active')
+
     const router = useRouter();
 
     const getLoans = async (id: number) => {
@@ -178,6 +181,25 @@ export default function Loans() {
         getLoanSchedule(userID, parentData.id)
         setParentID(parentData.id);
     }
+    
+
+    const handleInputChange2 = (e) => {
+        const formattedValue = formatAPR(e.target.value);
+        setAPR(formattedValue);
+    };
+
+    const formatAPR = (value) => {
+        // Remove any non-digit characters from the value
+        const numericValue = value.replace(/[^0-9]/g, '');
+
+        // Add a decimal point if the value is not empty and doesn't have one already
+        if (numericValue && !numericValue.includes('.')) {
+            return `.${numericValue}`;
+        }
+
+        return `.${numericValue}`;
+    };
+
 
     useEffect(() => {
         if (router.isReady) {
@@ -278,14 +300,15 @@ export default function Loans() {
                                 className='text-field'
                                 variant="outlined"
                                 label="APR"
-                                type='number'
-                                inputProps={{
-                                    step: "0.01",
-                                }}
+                                type='text'
                                 size="small"
                                 required
-                                name="apr">
+                                name="apr"
+                                value={APR}
+                                onChange={handleInputChange2} >
                             </TextField>
+                            
+
                             <TextField
                                 className='text-field'
                                 variant="outlined"
@@ -304,6 +327,7 @@ export default function Loans() {
                                 label="Status"
                                 size="small"
                                 required
+                                value={active}
                                 name="status">
                             </TextField>
                             <Button type="submit" variant="contained">Create a new loan</Button>

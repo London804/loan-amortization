@@ -95,6 +95,7 @@ export default function Home() {
         
         <Grid container spacing={2}>
             <Grid item xs={12}>
+                <h1>Loan Amortization</h1>`
             <SubmitUserForm 
                 data-testid='submit-user' 
                 ref={formQuery} 
