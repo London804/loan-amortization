@@ -13,6 +13,15 @@ export interface Loan {
     loan_details?: Array<object>;
 }
 
+export interface LoanSchedule {
+    month: number;
+    open_balance: number;
+    total_payment: number;
+    principal_payment: number;
+    interest_payment: number;
+    close_balance: number;
+}
+
 export interface Attention {
     type: 'success' | 'error' | 'info';
     message: string;
@@ -108,7 +117,7 @@ export const loans: Array<Loan> = [
     }
 ]
 
-export const loanScheduleMock = [
+export const loanScheduleMock: Array<LoanSchedule> = [
     {
         "month": 1,
         "open_balance": 1200,

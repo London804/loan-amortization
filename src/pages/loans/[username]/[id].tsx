@@ -11,7 +11,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import DataTable from 'react-data-table-component';
 import { endpoints } from '../../api/loan';
 import { NewLoanForm, ExpandedSection } from './id.styles';
-import { formatData, addCommas, removeCommas } from '../../../helpers/formatter';
+import { addCommas, removeCommas, formatLoanScheduleData, formatLoanData } from '../../../helpers/formatter';
 import  Notification from "../../../components/notification";
 import { Loan } from '../../../constants/loan.constant';
 
@@ -108,7 +108,7 @@ export default function Loans() {
             if (!data) {
                 setError({type: 'error', message: 'There was a problem loading loans'})
             } else {
-                setLoans(data);
+                setLoans(formatLoanData(data));
             }
 
         } catch (e) {
@@ -125,7 +125,7 @@ export default function Loans() {
             if (!data) {
                 setError({ type: 'error', message: 'There was a problem loading loans' })
             } else {
-                setLoanSchedule(formatData(data));
+                setLoanSchedule(formatLoanScheduleData(data));
             }
 
         } catch (e) {

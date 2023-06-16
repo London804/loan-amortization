@@ -1,19 +1,14 @@
-export const formatData = (data) => {
+import { Loan, LoanSchedule } from "@/constants/loan.constant";
+
+export const formatLoanScheduleData = (data: Array<LoanSchedule>) => {
+    console.log('data', data)
     return data.map(d => {
-        const formattedObj = {};
+        const formattedObj: LoanSchedule | any = {};
         for (let key in d) {
             console.log('key', key)
             console.log('key value', d[key])
             if (key !== 'month') {
-                // let formattedValue = addCommas(d[key])
-
-                // update to accomodate commas
-                // update to add $
-                // update to add % for APR
-                // formattedObj[key] = +(d[key]).toFixed(2);
-                formattedObj[key] = `$${formatNumber((d[key]))}`;
-
-
+                formattedObj[key] = `$${formatNumber((d[key as keyof LoanSchedule]))}`;
             } else {
                 formattedObj[key] = d[key];
             }
@@ -22,18 +17,33 @@ export const formatData = (data) => {
     })
 }
 
-// write separate function for top level table that works like formatData
+export const formatLoanData = (data: Array<Loan>) => {
+    return data.map(d => {
+        const formattedObj: Loan | any = {};
+        for (let key in d) {
+            if (key === 'amount') {
+                formattedObj[key] = `$${formatNumber((d[key]))}`;
 
-// move formatNumber here
-// also create removeFormatNumber here
-export const addCommas = (value) => {
+            } else if (key === 'apr') {
+                formattedObj[key] = `${d[key]}%`;
+                
+            } else {
+                formattedObj[key] = d[key as keyof Loan];
+            }
+        }
+        return formattedObj
+    })
+}
+
+
+
+export const addCommas = (value: string) => {
     const numericValue = value.replace(/[^0-9]/g, '');
     const formattedValue = numericValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     return formattedValue;
 };
 
 
-// this doesn't work
 export const formatNumber = (value: string | number) => {
     const formatString = typeof value !== 'string' ? value.toString() : value as string;
     const numericValue = formatString.replace(/[^0-9.]/g, ''); // Allowing decimal point (.)
@@ -48,8 +58,8 @@ export const formatNumber = (value: string | number) => {
     return '';
 };
 
-export const removeCommas = (number: string) => {
-    return number.replace(/,/g, '');
+export const removeCommas = (value: string) => {
+    return value.replace(/,/g, '');
 };
 
 
