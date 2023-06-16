@@ -5,13 +5,13 @@ export const formatData = (data) => {
             console.log('key', key)
             console.log('key value', d[key])
             if (key !== 'month') {
-                let formattedValue = addCommas(d[key])
+                // let formattedValue = addCommas(d[key])
 
                 // update to accomodate commas
                 // update to add $
                 // update to add % for APR
                 // formattedObj[key] = +(d[key]).toFixed(2);
-                formattedObj[key] = formatNumber((d[key]));
+                formattedObj[key] = `$${formatNumber((d[key]))}`;
 
 
             } else {
@@ -22,16 +22,12 @@ export const formatData = (data) => {
     })
 }
 
+// write separate function for top level table that works like formatData
+
 // move formatNumber here
 // also create removeFormatNumber here
-
-export const addCommas = (value: string | number) => {
-    console.log('value', typeof value);
-    let formatString; 
-    if (typeof value !== 'string' ) {
-        formatString = value.toString();
-    }
-    const numericValue = formatString.replace(/[^0-9]/g, '');
+export const addCommas = (value) => {
+    const numericValue = value.replace(/[^0-9]/g, '');
     const formattedValue = numericValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     return formattedValue;
 };
