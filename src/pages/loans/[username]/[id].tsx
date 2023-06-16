@@ -11,7 +11,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import DataTable from 'react-data-table-component';
 import { endpoints } from '../../api/loan';
 import { NewLoanForm, ExpandedSection } from './id.styles';
-import { formatData } from '../../../helpers/formatter';
+import { formatData, addCommas, removeCommas } from '../../../helpers/formatter';
 import  Notification from "../../../components/notification";
 import { Loan } from '../../../constants/loan.constant';
 
@@ -95,6 +95,7 @@ export default function Loans() {
     const newLoanQuery = useRef<any>(null);
     const shareLoanQuery = useRef<any>(null);
 
+    const [inputValue, setInputValue] = useState('');
     const [APR, setAPR] = useState<string | any>('.');
     const [active, setActive] = useState<string>('active')
 
@@ -136,7 +137,7 @@ export default function Loans() {
 
     const createNewLoan = async (query) => {
         query.preventDefault();
-        const amount = query?.target[0].value;
+        const amount = removeCommas(query?.target[0].value);
         const apr = query?.target[2].value;
         const term = query?.target[4].value;
         const active = query?.target[6].value;
@@ -181,7 +182,13 @@ export default function Loans() {
         getLoanSchedule(userID, parentData.id)
         setParentID(parentData.id);
     }
-    
+
+    const handleInputChange = (e) => {
+        const formattedValue = addCommas(e.target.value);
+        setInputValue(formattedValue);
+    };
+
+   
 
     const handleInputChange2 = (e) => {
         const formattedValue = formatAPR(e.target.value);
@@ -293,7 +300,9 @@ export default function Loans() {
                                 inputProps={{
                                     max: '1000000000'
                                 }}
-                                type="number"
+                                type="text"
+                                value={inputValue} 
+                                onChange={handleInputChange}
                                 name="amount">
                             </TextField>
                             <TextField
@@ -307,8 +316,6 @@ export default function Loans() {
                                 value={APR}
                                 onChange={handleInputChange2} >
                             </TextField>
-                            
-
                             <TextField
                                 className='text-field'
                                 variant="outlined"

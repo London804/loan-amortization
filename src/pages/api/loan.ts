@@ -31,7 +31,7 @@
         return await result.json().catch(error => console.log('error', error))
     };
 
-    const createLoan = async (owner_id: number, amount: number, apr: number, term: number, active: string) => {
+    const createLoan = async (owner_id: number, amount: string, apr: number, term: number, active: string) => {
         const createLoanURL = 'https://lending-api.azurewebsites.net/loans';
         const settings = {
             method: 'POST',
