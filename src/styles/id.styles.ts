@@ -16,6 +16,11 @@ export const NewLoanForm = styled.form`
         right: 0.5rem;
     }
 
+    .submit-button {
+        height: 2.5rem;
+    }
+    
+
     .MuiInputAdornment-root {
         width: 1.25rem;
     }

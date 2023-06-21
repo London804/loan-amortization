@@ -342,7 +342,7 @@ export default function Loans() {
                                 value={active}
                                 name="status">
                             </TextField>
-                            <Button type="submit" variant="contained">Submit loan</Button>
+                            <Button className='submit-button' type="submit" variant="contained">Submit loan</Button>
                         </NewLoanForm>
                         {newLoanStatus && (
                             <Notification
