@@ -13,10 +13,14 @@ import { endpoints } from '../../../api/loan';
 import { NewLoanForm, ExpandedSection } from '../../../styles/id.styles';
 import { addCommas, removeCommas, formatLoanScheduleData, formatLoanData } from '../../../helpers/formatter';
 import  Notification from "../../../components/notification";
-import { Loan } from '../../../constants/loan.constant';
+import { Loan, LoanSchedule } from '../../../constants/loan.constant';
 
+type DataRow = {
+    name: string;
+    selector: any;
+}
 
-const columns: TableColumn<Loan>[] = [
+const columns: Array<DataRow> = [
     {
         name: 'Amount',
         selector: row => row.amount,
@@ -53,7 +57,7 @@ interface loanScheduleRow {
     close_balance: number;
 }
 
-const loanScheduleColumns: TableColumn<loanScheduleRow>[] = [
+const loanScheduleColumns: Array<DataRow> = [
     {
         name: 'Month',
         selector: row => row.month,
@@ -136,7 +140,7 @@ export default function Loans() {
         }
     }
 
-    const createNewLoan = async (query) => {
+    const createNewLoan = async (query: any) => {
         query.preventDefault();
         const amount = removeCommas(query?.target[0].value);
         const apr = query?.target[2].value;
@@ -158,7 +162,7 @@ export default function Loans() {
         }
     }
 
-    const shareCurrentLoan = async (query, loanData) => {
+    const shareCurrentLoan = async (query: any, loanData: Loan) => {
         query.preventDefault();
         const userId = query?.target[0].value;
 
@@ -196,7 +200,7 @@ export default function Loans() {
         setAPR(formattedValue);
     };
 
-    const formatAPR = (value) => {
+    const formatAPR = (value: string) => {
         // Remove any non-digit characters from the value
         const numericValue = value.replace(/[^0-9]/g, '');
 
@@ -234,7 +238,7 @@ export default function Loans() {
         setLoans(updatedLoans);
     }, [parentID, loanSchedule])
 
-    const ExpandedComponent = ({data}) => {
+    const ExpandedComponent = ({data}: any) => {
         return (
             <ExpandedSection>
                 <div>

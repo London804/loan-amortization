@@ -23,14 +23,18 @@ export default function Home() {
     const router = useRouter();
 
     type DataRow = {
-        username: string;
+        username?: string;
         id: string;
+        name: string;
+        selector: any;
+        style?: any;
+        cells?: any;
     };
 
-    const columns: TableColumn<DataRow>[] = [
+    const columns: Array<DataRow> = [
         {
             name: 'Name',
-            selector: row => row.username,
+            selector: (row) => row.username,
             id: 'name',
             style: {
                 'font-size': '16px',
@@ -45,7 +49,7 @@ export default function Home() {
         },
         {
             name: 'ID',
-            selector: row => row.id,
+            selector: (row) => row.id,
             id: 'id',
         },
     ];
@@ -67,7 +71,7 @@ export default function Home() {
         }
     }
 
-    const createUser = async (query) => {
+    const createUser = async (query: any) => {
         query.preventDefault();
         const searchText = query?.target[0].value
         setLoading(true);
@@ -138,8 +142,8 @@ export default function Home() {
                     pagination
                     title="Users"
                     progressPending={loading} 
-                    onRowClicked={row => {
-                        router.push('/loans/[username]/[id]', `/loans/${row.username}/${row.id}`)
+                    onRowClicked={(row: any) => {
+                        router.push('/loans/[username]/[id]', `/loans/${row.username}/${row.id}`) 
                     }}
                 />
                 )

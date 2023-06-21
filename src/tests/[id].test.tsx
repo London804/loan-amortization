@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { act, render, screen, } from '@testing-library/react'
-import Loans from './[id]';
-import { Loan, loans, loanScheduleMock } from '../../../constants/loan.constant';
+import Loans from '../pages/loans/[username]/[id]';
+import { Loan, loans, loanScheduleMock } from '../constants/loan.constant';
 import mockRouter from 'next-router-mock';
 
 jest.mock('next/router', () => require('next-router-mock'));

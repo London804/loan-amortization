@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { render, screen, fireEvent} from '@testing-library/react'
-import Home from './index';
+import Home from '../pages/index';
 import { users, User } from '../constants/loan.constant';
 import mockRouter from 'next-router-mock';
 import { useRouter } from 'next/router';

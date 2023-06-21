@@ -1,7 +1,6 @@
 import { Loan, LoanSchedule } from "@/constants/loan.constant";
 
 export const formatLoanScheduleData = (data: Array<LoanSchedule>) => {
-    console.log('data', data)
     return data.map(d => {
         const formattedObj: LoanSchedule | any = {};
         for (let key in d) {
