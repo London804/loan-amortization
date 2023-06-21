@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { colors } from '../../../styles/colors.styles';
+import { colors } from './colors.styles';
 
 
 export const NewLoanForm = styled.form`
@@ -12,6 +12,7 @@ export const NewLoanForm = styled.form`
     }  
 
     .button {
+        height: 2.5rem;
         right: 0.5rem;
     }
 

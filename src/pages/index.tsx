@@ -8,9 +8,9 @@ import {
 import Add from '@mui/icons-material/Add';
 import InputAdornment from '@mui/material/InputAdornment';
 import DataTable from 'react-data-table-component';
-import { endpoints } from './api/loan';
+import { endpoints } from '../api/loan';
 import { useRouter } from 'next/router';
-import { SubmitUserForm } from './index.styles';
+import { SubmitUserForm } from '../styles/index.styles';
 import Notification from "../components/notification";
 import {Attention} from '../constants/loan.constant';
 

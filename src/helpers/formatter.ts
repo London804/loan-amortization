@@ -5,8 +5,6 @@ export const formatLoanScheduleData = (data: Array<LoanSchedule>) => {
     return data.map(d => {
         const formattedObj: LoanSchedule | any = {};
         for (let key in d) {
-            console.log('key', key)
-            console.log('key value', d[key])
             if (key !== 'month') {
                 formattedObj[key] = `$${formatNumber((d[key as keyof LoanSchedule]))}`;
             } else {

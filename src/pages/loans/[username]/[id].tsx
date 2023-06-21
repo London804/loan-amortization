@@ -9,8 +9,8 @@ import {
 import Add from '@mui/icons-material/Add';
 import InputAdornment from '@mui/material/InputAdornment';
 import DataTable from 'react-data-table-component';
-import { endpoints } from '../../api/loan';
-import { NewLoanForm, ExpandedSection } from './id.styles';
+import { endpoints } from '../../../api/loan';
+import { NewLoanForm, ExpandedSection } from '../../../styles/id.styles';
 import { addCommas, removeCommas, formatLoanScheduleData, formatLoanData } from '../../../helpers/formatter';
 import  Notification from "../../../components/notification";
 import { Loan } from '../../../constants/loan.constant';
@@ -91,6 +91,7 @@ export default function Loans() {
     const [error, setError] = useState<any | null>(null);
     const [newLoanStatus, setNewLoanStatus] = useState<any | null>(null);
     const [loading, setLoading] = useState(false);
+    const [loadingLoan, setLoadingLoan] = useState(false);
     const [parentID, setParentID] = useState<any | null>(null);
     const newLoanQuery = useRef<any>(null);
     const shareLoanQuery = useRef<any>(null);
@@ -141,7 +142,7 @@ export default function Loans() {
         const apr = query?.target[2].value;
         const term = query?.target[4].value;
         const active = query?.target[6].value;
-        setLoading(true);
+        setLoadingLoan(true);
         try {
             const data = await endpoints.createLoan(userID, amount, apr, term, active)
             if (!data) {
@@ -153,7 +154,7 @@ export default function Loans() {
         } catch (e) {
             setNewLoanStatus({type: 'error', message:`Error something went wrong, ${e}`})
         } finally {
-            setLoading(false);
+            setLoadingLoan(false);
         }
     }
 
@@ -337,7 +338,7 @@ export default function Loans() {
                                 value={active}
                                 name="status">
                             </TextField>
-                            <Button type="submit" variant="contained">Create a new loan</Button>
+                            <Button type="submit" variant="contained">Submit loan</Button>
                         </NewLoanForm>
                         {newLoanStatus && (
                             <Notification
@@ -360,6 +361,7 @@ export default function Loans() {
                             columns={columns}
                             data={loans}
                             title={`Loans for ${username}`}
+                            progressPending={loadingLoan} 
                             expandableRows
                             expandableRowsComponent={ExpandedComponent}
                             pagination
